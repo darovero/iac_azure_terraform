@@ -26,7 +26,7 @@ resource "random_integer" "resource_suffix" {
 
 # Definir la cantidad de instancias para cada recurso y configuración de subnets
 locals {
-  resource_group_count      = 2
+  resource_group_count      = 1
   storage_account_count     = 1
   key_vault_count           = 1
   log_analytics_count       = 0
@@ -40,6 +40,7 @@ locals {
   vm_windows                = 0
   vm_linux                  = 0
   application_gateway_count = 0
+  aks_count                 = 1
 
   # Configuración para crear solo subnets de 16 IPs
   subnet_16_ips_count = 2  # Ajustado para que todas las subnets sean de 16 IPs
@@ -358,4 +359,23 @@ module "elastic_pool" {
   }
 
   depends_on = [azurerm_mssql_server.sql_server]
+}
+
+# AKS Cluster
+module "aks" {
+  source              = "../modules/aks"
+  count               = local.aks_count
+
+  aks_name            = "bogdevaks${random_integer.resource_suffix.result + count.index}"
+  location            = var.location
+  resource_group_name = module.resource_groups[count.index % local.resource_group_count].resource_group_name
+  node_count          = 1
+  vm_size             = "Standard_B2s"
+  kubernetes_version = "1.29.15"
+
+  tags = {
+    owner       = var.owner
+    environment = var.environment
+    tfv         = "2.0.0"
+  }
 }
