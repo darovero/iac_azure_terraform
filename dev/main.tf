@@ -43,6 +43,7 @@ locals {
   aks_count                 = 0
   acr_count                 = 0
   data_factory_count        = 1
+  databricks_count          = 1
 
   # Configuración para crear solo subnets de 16 IPs
   subnet_16_ips_count = 2  # Ajustado para que todas las subnets sean de 16 IPs
@@ -403,6 +404,21 @@ module "data_factory" {
   data_factory_name   = "bogdevadf${random_integer.resource_suffix.result + count.index}"
   location            = var.location
   resource_group_name = module.resource_groups[count.index % local.resource_group_count].resource_group_name
+
+  tags = {
+    owner       = var.owner
+    environment = var.environment
+    tfv         = "1.0.0"
+  }
+}
+
+module "databricks" {
+  source              = "../modules/databricks"
+  count               = local.databricks_count * local.resource_group_count
+
+  name                = "bogdevdbw${random_integer.resource_suffix.result + count.index}"
+  resource_group_name = module.resource_groups[count.index % local.resource_group_count].resource_group_name
+  location            = var.location
 
   tags = {
     owner       = var.owner
