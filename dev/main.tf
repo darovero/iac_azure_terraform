@@ -42,6 +42,7 @@ locals {
   application_gateway_count = 0
   aks_count                 = 0
   acr_count                 = 0
+  data_factory_count        = 1
 
   # Configuración para crear solo subnets de 16 IPs
   subnet_16_ips_count = 2  # Ajustado para que todas las subnets sean de 16 IPs
@@ -392,5 +393,20 @@ module "acr" {
     owner       = var.owner
     environment = var.environment
     tfv         = "2.0.0"
+  }
+}
+
+module "data_factory" {
+  source              = "../modules/data_factory"
+  count               = local.data_factory_count * local.resource_group_count
+
+  data_factory_name   = "bogdevadf${random_integer.resource_suffix.result + count.index}"
+  location            = var.location
+  resource_group_name = module.resource_groups[count.index % local.resource_group_count].resource_group_name
+
+  tags = {
+    owner       = var.owner
+    environment = var.environment
+    tfv         = "1.0.0"
   }
 }
