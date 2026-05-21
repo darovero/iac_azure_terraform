@@ -26,18 +26,24 @@ resource "random_integer" "resource_suffix" {
 
 # Definir la cantidad de instancias para cada recurso y configuración de subnets
 locals {
-  resource_group_count   = 2
-  storage_account_count  = 1
-  key_vault_count        = 1
-  log_analytics_count    = 0
-  sql_server_count       = 1
-  virtual_network_count  = 0
-  service_plan_windows   = 0
-  service_plan_linux     = 0
-  web_app_windows        = 0
-  web_app_linux          = 0
-  vm_windows             = 0
-  vm_linux               = 0
+  resource_group_count      = 2
+  storage_account_count     = 2
+  key_vault_count           = 1
+  log_analytics_count       = 0
+  sql_server_count          = 1
+  elastic_pool_count        = 0
+  virtual_network_count     = 1
+  service_plan_windows      = 0
+  service_plan_linux        = 0
+  web_app_windows           = 0
+  web_app_linux             = 0
+  vm_windows                = 0
+  vm_linux                  = 0
+  application_gateway_count = 0
+  aks_count                 = 0
+  acr_count                 = 0
+  data_factory_count        = 1
+  databricks_count          = 0
 
   # Configuración para crear solo subnets de 16 IPs
   subnet_16_ips_count = 2  # Ajustado para que todas las subnets sean de 16 IPs
@@ -48,7 +54,7 @@ locals {
 module "resource_groups" {
   source              = "../modules/resource_group"
   count               = local.resource_group_count
-  resource_group_name = "uscddavp${random_integer.resource_suffix.result + count.index}rsg01"
+  resource_group_name = "bogdevrg${random_integer.resource_suffix.result + count.index}"
   location            = var.location
   tags = {
     owner       = var.owner
@@ -60,7 +66,7 @@ module "resource_groups" {
 # Key Vaults
 resource "azurerm_key_vault" "key_vault" {
   count               = local.key_vault_count * local.resource_group_count
-  name                = "uscddavp${random_integer.resource_suffix.result + count.index}akv01"
+  name                = "bogdevkv${random_integer.resource_suffix.result + count.index}"
   resource_group_name = module.resource_groups[count.index % local.resource_group_count].resource_group_name
   location            = var.location
   sku_name            = "standard"
@@ -86,7 +92,7 @@ resource "azurerm_key_vault" "key_vault" {
 # Crear múltiples Virtual Networks con `address_space` incrementado
 resource "azurerm_virtual_network" "vnet" {
   count               = local.virtual_network_count * local.resource_group_count
-  name                = "uscddavp${random_integer.resource_suffix.result + count.index}vnt01"
+  name                = "bogdevvnet${random_integer.resource_suffix.result + count.index}"
   location            = var.location
   resource_group_name = module.resource_groups[count.index % local.resource_group_count].resource_group_name
 
@@ -129,7 +135,7 @@ locals {
 # Storage Accounts
 resource "azurerm_storage_account" "storage_accounts" {
   count                = local.storage_account_count * local.resource_group_count
-  name                 = "uscddavp${random_integer.resource_suffix.result + count.index}sta01"
+  name                 = "bogdevsta${random_integer.resource_suffix.result + count.index}"
   resource_group_name  = module.resource_groups[count.index % local.resource_group_count].resource_group_name
   location             = var.location
   account_tier         = "Standard"
@@ -145,7 +151,7 @@ resource "azurerm_storage_account" "storage_accounts" {
 # SQL Servers
 resource "azurerm_mssql_server" "sql_server" {
   count                        = local.sql_server_count * local.resource_group_count
-  name                         = "uscddavp${random_integer.resource_suffix.result + count.index}sql01"
+  name                         = "bogdevsql${random_integer.resource_suffix.result + count.index}"
   resource_group_name          = module.resource_groups[count.index % local.resource_group_count].resource_group_name
   location                     = var.location
   version                      = "12.0"
@@ -162,7 +168,7 @@ resource "azurerm_mssql_server" "sql_server" {
 # SQL Databases
 resource "azurerm_mssql_database" "sql_database" {
   count     = local.sql_server_count * local.resource_group_count
-  name      = "uscddavp${random_integer.resource_suffix.result + count.index}test01"
+  name      = "bogdevdb${random_integer.resource_suffix.result + count.index}"
   server_id = azurerm_mssql_server.sql_server[count.index].id
   sku_name  = "S0"
 
@@ -176,7 +182,7 @@ resource "azurerm_mssql_database" "sql_database" {
 module "service_plan_windows" {
   source              = "../modules/service_plan"
   count               = local.service_plan_windows > 0 ? 1 : 0
-  service_plan_name   = "uscddavp${random_integer.resource_suffix.result}spw01"
+  service_plan_name   = "bogdevspw${random_integer.resource_suffix.result}"
   location            = var.location
   resource_group_name = module.resource_groups[0].resource_group_name
   os_type             = "Windows"
@@ -189,10 +195,27 @@ module "service_plan_windows" {
   }
 }
 
+# Log Analytics Workspaces
+resource "azurerm_log_analytics_workspace" "log_analytics" {
+  count               = local.log_analytics_count * local.resource_group_count
+  name                = "bogdevlaw${random_integer.resource_suffix.result + count.index}"
+  resource_group_name = module.resource_groups[count.index % local.resource_group_count].resource_group_name
+  location            = var.location
+  sku                 = "PerGB2018"
+
+  retention_in_days   = 30  # Configuración de retención, ajusta según tus necesidades
+
+  tags = {
+    owner       = var.owner
+    environment = var.environment
+    tfv         = "2.0.0"
+  }
+}
+
 module "service_plan_linux" {
   source              = "../modules/service_plan"
   count               = local.service_plan_linux > 0 ? 1 : 0
-  service_plan_name   = "uscddavp${random_integer.resource_suffix.result}spl01"
+  service_plan_name   = "bogdevspl${random_integer.resource_suffix.result}"
   location            = var.location
   resource_group_name = module.resource_groups[0].resource_group_name
   os_type             = "Linux"
@@ -210,7 +233,7 @@ module "web_app_windows" {
   source              = "../modules/web_app"
   count               = local.web_app_windows
   os_type             = "Windows"
-  web_app_name        = "uscddavp${count.index + 1}${random_integer.resource_suffix.result}waw01"
+  web_app_name        = "bogdevwaw${count.index + 1}${random_integer.resource_suffix.result}"
   resource_group_name = module.resource_groups[0].resource_group_name
   location            = var.location
   service_plan_id     = local.service_plan_windows > 0 ? module.service_plan_windows[0].service_plan_id : null
@@ -226,7 +249,7 @@ module "web_app_linux" {
   source              = "../modules/web_app"
   count               = local.web_app_linux
   os_type             = "Linux"
-  web_app_name        = "uscddavp${count.index + 1}${random_integer.resource_suffix.result}wal01"
+  web_app_name        = "bogdevwal${count.index + 1}${random_integer.resource_suffix.result}"
   resource_group_name = module.resource_groups[0].resource_group_name
   location            = var.location
   service_plan_id     = local.service_plan_linux > 0 ? module.service_plan_linux[0].service_plan_id : null
@@ -242,18 +265,19 @@ module "web_app_linux" {
 module "vm_windows" {
   source              = "../modules/virtual_machine"
   count               = local.vm_windows * local.resource_group_count
-  vm_name             = "uscddavp${random_integer.resource_suffix.result + count.index}vmw01"
+  vm_name             = "bogdevvmw${random_integer.resource_suffix.result + count.index}"
   location            = var.location
   resource_group_name = module.resource_groups[count.index % local.resource_group_count].resource_group_name
   subnet_id           = length(local.subnet_ids) > 0 ? local.subnet_ids[0][0] : ""
-  vm_size             = "Standard_B1s"
+  vm_size             = "Standard_B2s"
   os_type             = "Windows"
   admin_username      = "winadmin"
   admin_password      = "SecurePassword123!"
+  enable_public_ip    = true  # Activar IP pública para Windows
 
   image_publisher     = "MicrosoftWindowsServer"
   image_offer         = "WindowsServer"
-  image_sku           = "2019-Datacenter"
+  image_sku           = "2016-Datacenter"
   disk_type           = "Standard_LRS"
 
   tags = {
@@ -266,10 +290,10 @@ module "vm_windows" {
 module "vm_linux" {
   source              = "../modules/virtual_machine"
   count               = local.vm_linux * local.resource_group_count
-  vm_name             = "uscddavp${random_integer.resource_suffix.result + count.index}vml01"
+  vm_name             = "bogdevvml${random_integer.resource_suffix.result + count.index}"
   location            = var.location
   resource_group_name = module.resource_groups[count.index % local.resource_group_count].resource_group_name
-  subnet_id           = length(local.subnet_ids) > 1 ? local.subnet_ids[0][1] : ""
+  subnet_id           = length(local.subnet_ids) > count.index ? local.subnet_ids[count.index % local.resource_group_count][1] : ""
   vm_size             = "Standard_B1s"
   os_type             = "Linux"
   admin_username      = "linuxadmin"
@@ -280,9 +304,125 @@ module "vm_linux" {
   image_sku           = "18.04-LTS"
   disk_type           = "Standard_LRS"
 
+  enable_public_ip    = true
   tags = {
     owner       = var.owner
     environment = var.environment
     tfv         = "2.0.0"
+  }
+}
+
+module "application_gateway" {
+  source                  = "../modules/application_gateway"
+  count                   = local.application_gateway_count
+  application_gateway_name = "bogdevagw${random_integer.resource_suffix.result + count.index}"
+  location                = var.location
+  resource_group_name     = module.resource_groups[count.index % local.resource_group_count].resource_group_name
+  subnet_id               = local.subnet_ids[count.index % length(local.subnet_ids)][3]  # Subnet 4
+
+  enable_public_ip        = true
+  sku_name                = "Standard_v2"
+  sku_tier                = "Standard_v2"
+  sku_capacity            = 2
+  enable_https            = false # Cambia a true para habilitar HTTPS
+  ssl_certificate_data    = var.ssl_certificate_data
+  ssl_certificate_password = var.ssl_certificate_password
+
+  tags = {
+    owner       = var.owner
+    environment = var.environment
+    tfv         = "2.0.0"
+  }
+
+  depends_on = [
+    azurerm_virtual_network.vnet
+  ]
+}
+
+module "elastic_pool" {
+  source              = "../modules/elastic_pool"
+  count               = local.elastic_pool_count * local.resource_group_count
+
+  elastic_pool_name   = "bogdevepool${random_integer.resource_suffix.result + count.index}"
+  resource_group_name = module.resource_groups[count.index % local.resource_group_count].resource_group_name
+  location            = var.location
+
+  # Asegurarse de que el servidor SQL corresponde al índice del grupo de recursos
+  server_name         = azurerm_mssql_server.sql_server[count.index % local.resource_group_count].name
+
+  vcores              = 2
+  max_size_bytes      = 34359738368
+  min_capacity_per_db = 0
+  max_capacity_per_db = 1
+
+  tags = {
+    owner       = var.owner
+    environment = var.environment
+    tfv         = "1.0.0"
+  }
+
+  depends_on = [azurerm_mssql_server.sql_server]
+}
+
+# AKS Cluster
+module "aks" {
+  source              = "../modules/aks"
+  count               = local.aks_count
+
+  aks_name            = "bogdevaks${random_integer.resource_suffix.result + count.index}"
+  location            = var.location
+  resource_group_name = module.resource_groups[count.index % local.resource_group_count].resource_group_name
+  node_count          = 1
+  vm_size             = "Standard_B2s"
+  kubernetes_version  = "1.29.15"
+
+  tags = {
+    owner       = var.owner
+    environment = var.environment
+    tfv         = "2.0.0"
+  }
+}
+
+module "acr" {
+  source              = "../modules/acr"
+  count               = local.acr_count
+  acr_name            = "bogdevacr${random_integer.resource_suffix.result + count.index}"
+  location            = var.location
+  resource_group_name = module.resource_groups[count.index % local.resource_group_count].resource_group_name
+
+  tags = {
+    owner       = var.owner
+    environment = var.environment
+    tfv         = "2.0.0"
+  }
+}
+
+module "data_factory" {
+  source              = "../modules/data_factory"
+  count               = local.data_factory_count * local.resource_group_count
+
+  data_factory_name   = "bogdevadf${random_integer.resource_suffix.result + count.index}"
+  location            = var.location
+  resource_group_name = module.resource_groups[count.index % local.resource_group_count].resource_group_name
+
+  tags = {
+    owner       = var.owner
+    environment = var.environment
+    tfv         = "1.0.0"
+  }
+}
+
+module "databricks" {
+  source              = "../modules/databricks"
+  count               = local.databricks_count * local.resource_group_count
+
+  name                = "bogdevdbw${random_integer.resource_suffix.result + count.index}"
+  resource_group_name = module.resource_groups[count.index % local.resource_group_count].resource_group_name
+  location            = var.location
+
+  tags = {
+    owner       = var.owner
+    environment = var.environment
+    tfv         = "1.0.0"
   }
 }
