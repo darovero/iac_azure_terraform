@@ -1,5 +1,9 @@
+#######################################
+# GENERAL CONFIGURATION
+#######################################
+
 variable "subscription_id" {
-  description = "Azure Subscription ID donde se desplegarán los recursos"
+  description = "Azure Subscription ID"
   type        = string
   sensitive   = true
 }
@@ -11,21 +15,79 @@ variable "tenant_id" {
 }
 
 variable "location" {
-  description = "Región de Azure"
-  type        = string
-}
-
-variable "owner" {
-  description = "Propietario de los recursos"
+  description = "Azure region where resources will be deployed"
   type        = string
 }
 
 variable "environment" {
-  description = "Ambiente de despliegue"
+  description = "Deployment environment"
   type        = string
 }
 
 variable "project" {
-  description = "Nombre corto del proyecto"
+  description = "Project short name"
   type        = string
+}
+
+variable "owner" {
+  description = "Resource owner"
+  type        = string
+}
+
+#######################################
+# KEY VAULT
+#######################################
+
+variable "key_vault_admin_object_id" {
+  description = "Azure AD Object ID for Key Vault administration"
+  type        = string
+  sensitive   = true
+}
+
+#######################################
+# SQL SERVER
+#######################################
+
+variable "sql_admin_username" {
+  description = "SQL Server administrator username"
+  type        = string
+}
+
+variable "sql_admin_password" {
+  description = "SQL Server administrator password"
+  type        = string
+  sensitive   = true
+}
+
+#######################################
+# VIRTUAL MACHINES
+#######################################
+
+variable "vm_admin_username" {
+  description = "Virtual machine administrator username"
+  type        = string
+}
+
+variable "vm_admin_password" {
+  description = "Virtual machine administrator password"
+  type        = string
+  sensitive   = true
+}
+
+#######################################
+# SSL CERTIFICATES
+#######################################
+
+variable "ssl_certificate_data" {
+  description = "Base64 encoded SSL certificate"
+  type        = string
+  sensitive   = true
+  default     = null
+}
+
+variable "ssl_certificate_password" {
+  description = "SSL certificate password"
+  type        = string
+  sensitive   = true
+  default     = null
 }
