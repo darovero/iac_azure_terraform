@@ -1,8 +1,3 @@
-resource "random_integer" "resource_suffix" {
-  min = 1
-  max = 99
-}
-
 locals {
   common_tags = {
     owner       = var.owner
@@ -19,7 +14,7 @@ module "resource_groups" {
   for_each = var.resource_groups
 
   resource_group_name = each.value.name
-  location            = each.value.location
+  location            = coalesce(each.value.location, var.location)
   tags                = merge(local.common_tags, each.value.tags)
 }
 
@@ -61,4 +56,18 @@ module "storage_accounts" {
   account_replication_type = each.value.account_replication_type
   min_tls_version          = each.value.min_tls_version
   tags                     = merge(local.common_tags, each.value.tags)
+}
+
+module "sql_servers" {
+  source = "../../modules/sql_server"
+
+  for_each = var.sql_servers
+
+  sql_server_name     = each.value.name
+  resource_group_name = module.resource_groups[each.value.resource_group_key].resource_group_name
+  location            = coalesce(each.value.location, module.resource_groups[each.value.resource_group_key].resource_group_location)
+  sql_server_version  = each.value.version
+  admin_username      = each.value.admin_username
+  admin_password      = each.value.admin_password
+  tags                = merge(local.common_tags, each.value.tags)
 }

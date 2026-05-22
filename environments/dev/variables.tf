@@ -42,7 +42,7 @@ variable "resource_groups" {
   description = "Resource Groups to create"
   type = map(object({
     name     = string
-    location = string
+    location = optional(string)
     tags     = optional(map(string), {})
   }))
 }
@@ -97,19 +97,19 @@ variable "storage_accounts" {
 }
 
 #######################################
-# SSL CERTIFICATES
+# SQL SERVER
 #######################################
 
-variable "ssl_certificate_data" {
-  description = "Base64 encoded SSL certificate"
-  type        = string
-  sensitive   = true
-  default     = null
-}
-
-variable "ssl_certificate_password" {
-  description = "SSL certificate password"
-  type        = string
-  sensitive   = true
-  default     = null
+variable "sql_servers" {
+  description = "Azure SQL Servers to create"
+  type = map(object({
+    name               = string
+    resource_group_key = string
+    location           = optional(string)
+    version            = optional(string, "12.0")
+    admin_username     = string
+    admin_password     = string
+    tags               = optional(map(string), {})
+  }))
+  default = {}
 }

@@ -63,3 +63,21 @@ output "storage_account_blob_endpoints" {
     for key, st in module.storage_accounts : key => st.primary_blob_endpoint
   }
 }
+
+output "sql_server_names" {
+  value = {
+    for key, sql in module.sql_servers : key => sql.sql_server_name
+  }
+}
+
+output "sql_server_ids" {
+  value = {
+    for key, sql in module.sql_servers : key => sql.sql_server_id
+  }
+}
+
+output "sql_server_fqdns" {
+  value = {
+    for key, sql in module.sql_servers : key => sql.sql_server_fqdn
+  }
+}
