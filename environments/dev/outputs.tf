@@ -27,3 +27,21 @@ output "log_analytics_workspace_ids" {
     for key, law in module.log_analytics_workspaces : key => law.log_analytics_workspace_id
   }
 }
+
+output "key_vault_names" {
+  value = {
+    for key, kv in module.key_vaults : key => kv.key_vault_name
+  }
+}
+
+output "key_vault_ids" {
+  value = {
+    for key, kv in module.key_vaults : key => kv.key_vault_id
+  }
+}
+
+output "key_vault_uris" {
+  value = {
+    for key, kv in module.key_vaults : key => kv.key_vault_uri
+  }
+}

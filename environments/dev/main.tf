@@ -35,3 +35,16 @@ module "log_analytics_workspaces" {
   retention_in_days   = each.value.retention_in_days
   tags                = merge(local.common_tags, each.value.tags)
 }
+
+module "key_vaults" {
+  source = "../../modules/key_vault"
+
+  for_each = var.key_vaults
+
+  key_vault_name      = each.value.name
+  resource_group_name = module.resource_groups[each.value.resource_group_key].resource_group_name
+  location            = coalesce(each.value.location, module.resource_groups[each.value.resource_group_key].resource_group_location)
+  tenant_id           = var.tenant_id
+  sku_name            = each.value.sku_name
+  tags                = merge(local.common_tags, each.value.tags)
+}

@@ -64,20 +64,20 @@ variable "log_analytics_workspaces" {
   default = {}
 }
 #######################################
-# SQL SERVER
+# KEY VAULT
 #######################################
 
-variable "sql_admin_username" {
-  description = "SQL Server administrator username"
-  type        = string
+variable "key_vaults" {
+  description = "Key Vaults to create"
+  type = map(object({
+    name               = string
+    resource_group_key = string
+    location           = optional(string)
+    sku_name           = optional(string, "standard")
+    tags               = optional(map(string), {})
+  }))
+  default = {}
 }
-
-variable "sql_admin_password" {
-  description = "SQL Server administrator password"
-  type        = string
-  sensitive   = true
-}
-
 #######################################
 # VIRTUAL MACHINES
 #######################################
