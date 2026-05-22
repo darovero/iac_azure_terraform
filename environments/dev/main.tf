@@ -12,13 +12,13 @@ locals {
     tfv         = "2.0.0"
   }
 
-  resource_group_count      = 2
-  storage_account_count     = 2
-  key_vault_count           = 1
+  resource_group_count      = 1
+  storage_account_count     = 0
+  key_vault_count           = 0
   log_analytics_count       = 0
-  sql_server_count          = 1
+  sql_server_count          = 0
   elastic_pool_count        = 0
-  virtual_network_count     = 1
+  virtual_network_count     = 0
   service_plan_windows      = 0
   service_plan_linux        = 0
   web_app_windows           = 0
@@ -28,7 +28,7 @@ locals {
   application_gateway_count = 0
   aks_count                 = 0
   acr_count                 = 0
-  data_factory_count        = 1
+  data_factory_count        = 0
   databricks_count          = 0
 }
 
@@ -156,7 +156,6 @@ module "log_analytics" {
   resource_group_name = module.resource_groups[count.index % local.resource_group_count].resource_group_name
   location            = var.location
   sku                 = "PerGB2018"
-  retention_in_days   = 30
   tags                = local.common_tags
 }
 

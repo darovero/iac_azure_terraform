@@ -1,5 +1,3 @@
-# environments/dev/providers.tf
-
 terraform {
   required_version = ">= 1.6.0"
 
@@ -7,11 +5,6 @@ terraform {
     azurerm = {
       source  = "hashicorp/azurerm"
       version = "~> 4.0"
-    }
-
-    random = {
-      source  = "hashicorp/random"
-      version = "~> 3.0"
     }
   }
 }
