@@ -1,16 +1,14 @@
+# modules/resource_group/variables.tf
+
 variable "resource_group_name" {
-  description = "Nombre del Resource Group"
-  type        = string
+  type = string
 }
 
 variable "location" {
-  description = "Ubicación del Resource Group"
-  type        = string
-  default     = "eastus"
+  type = string
 }
 
 variable "tags" {
-  description = "Tags a aplicar al Resource Group"
-  type        = map(string)
-  default     = {}
+  type    = map(string)
+  default = {}
 }
