@@ -23,3 +23,15 @@ module "resource_groups" {
   tags                = merge(local.common_tags, each.value.tags)
 }
 
+module "log_analytics_workspaces" {
+  source = "../../modules/log_analytics"
+
+  for_each = var.log_analytics_workspaces
+
+  log_analytics_name  = each.value.name
+  resource_group_name = module.resource_groups[each.value.resource_group_key].resource_group_name
+  location            = coalesce(each.value.location, module.resource_groups[each.value.resource_group_key].resource_group_location)
+  sku                 = each.value.sku
+  retention_in_days   = each.value.retention_in_days
+  tags                = merge(local.common_tags, each.value.tags)
+}

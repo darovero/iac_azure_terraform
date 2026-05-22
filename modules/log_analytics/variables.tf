@@ -1,27 +1,32 @@
 variable "log_analytics_name" {
-  description = "Nombre del Log Analytics Workspace"
+  description = "Log Analytics Workspace name"
   type        = string
 }
 
 variable "resource_group_name" {
-  description = "Nombre del Resource Group donde se creará el Log Analytics Workspace"
+  description = "Resource Group name where the workspace will be created"
   type        = string
 }
 
 variable "location" {
-  description = "Ubicación del Log Analytics Workspace"
+  description = "Azure region for the Log Analytics Workspace"
   type        = string
-  default     = "eastus"
 }
 
 variable "sku" {
-  description = "SKU del Log Analytics Workspace"
+  description = "SKU for the Log Analytics Workspace"
   type        = string
   default     = "PerGB2018"
 }
 
+variable "retention_in_days" {
+  description = "Data retention in days"
+  type        = number
+  default     = 30
+}
+
 variable "tags" {
-  description = "Tags a aplicar al Log Analytics Workspace"
+  description = "Tags to apply"
   type        = map(string)
   default     = {}
 }

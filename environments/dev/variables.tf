@@ -48,15 +48,21 @@ variable "resource_groups" {
 }
 
 #######################################
-# KEY VAULT
+# LOG ANALYTICS
 #######################################
 
-variable "key_vault_admin_object_id" {
-  description = "Azure AD Object ID for Key Vault administration"
-  type        = string
-  sensitive   = true
+variable "log_analytics_workspaces" {
+  description = "Log Analytics Workspaces to create"
+  type = map(object({
+    name               = string
+    resource_group_key = string
+    location           = optional(string)
+    sku                = optional(string, "PerGB2018")
+    retention_in_days  = optional(number, 30)
+    tags               = optional(map(string), {})
+  }))
+  default = {}
 }
-
 #######################################
 # SQL SERVER
 #######################################
