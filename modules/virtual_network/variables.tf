@@ -1,37 +1,34 @@
 variable "vnet_name" {
-  description = "Nombre de la red virtual"
+  description = "Virtual Network name"
   type        = string
 }
 
 variable "resource_group_name" {
-  description = "Nombre del Resource Group"
+  description = "Resource Group name"
   type        = string
 }
 
 variable "location" {
-  description = "Ubicación de la red virtual"
+  description = "Azure region"
   type        = string
 }
 
 variable "address_space" {
-  description = "Espacio de direcciones IP para la VNet"
+  description = "Virtual Network address space"
   type        = list(string)
 }
 
-variable "subnet_prefixes" {
-  description = "Lista de prefijos de direcciones para las subredes"
-  type        = list(string)
-  default     = []
-}
-
-variable "subnet_names" {
-  description = "Lista de nombres para las subredes"
-  type        = list(string)
-  default     = []
+variable "subnets" {
+  description = "Subnets to create inside the Virtual Network"
+  type = map(object({
+    name             = string
+    address_prefixes = list(string)
+  }))
+  default = {}
 }
 
 variable "tags" {
-  description = "Etiquetas para los recursos"
+  description = "Tags to apply"
   type        = map(string)
   default     = {}
 }

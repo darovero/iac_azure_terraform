@@ -94,3 +94,16 @@ module "elastic_pools" {
 
   depends_on = [module.sql_servers]
 }
+
+module "virtual_networks" {
+  source = "../../modules/virtual_network"
+
+  for_each = var.virtual_networks
+
+  vnet_name           = each.value.name
+  resource_group_name = module.resource_groups[each.value.resource_group_key].resource_group_name
+  location            = coalesce(each.value.location, module.resource_groups[each.value.resource_group_key].resource_group_location)
+  address_space       = each.value.address_space
+  subnets             = each.value.subnets
+  tags                = merge(local.common_tags, each.value.tags)
+}

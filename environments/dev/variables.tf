@@ -136,3 +136,24 @@ variable "elastic_pools" {
   }))
   default = {}
 }
+
+#######################################
+# VIRTUAL NETWORK
+#######################################
+variable "virtual_networks" {
+  description = "Virtual Networks to create"
+  type = map(object({
+    name               = string
+    resource_group_key = string
+    location           = optional(string)
+    address_space      = list(string)
+
+    subnets = optional(map(object({
+      name             = string
+      address_prefixes = list(string)
+    })), {})
+
+    tags = optional(map(string), {})
+  }))
+  default = {}
+}

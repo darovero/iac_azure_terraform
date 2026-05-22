@@ -93,3 +93,21 @@ output "elastic_pool_ids" {
     for key, ep in module.elastic_pools : key => ep.elastic_pool_id
   }
 }
+
+output "virtual_network_names" {
+  value = {
+    for key, vnet in module.virtual_networks : key => vnet.virtual_network_name
+  }
+}
+
+output "virtual_network_ids" {
+  value = {
+    for key, vnet in module.virtual_networks : key => vnet.virtual_network_id
+  }
+}
+
+output "virtual_network_subnet_ids" {
+  value = {
+    for key, vnet in module.virtual_networks : key => vnet.subnet_ids
+  }
+}
