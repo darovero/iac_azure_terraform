@@ -1,9 +1,11 @@
 output "sql_server_name" {
-  description = "Nombre del servidor SQL"
-  value       = azurerm_mssql_server.sql_server.name # Cambiar a azurerm_mssql_server
+  value = azurerm_mssql_server.this.name
+}
+
+output "sql_server_id" {
+  value = azurerm_mssql_server.this.id
 }
 
 output "sql_server_fqdn" {
-  description = "FQDN del servidor SQL"
-  value       = azurerm_mssql_server.sql_server.fully_qualified_domain_name # Cambiar a azurerm_mssql_server
+  value = azurerm_mssql_server.this.fully_qualified_domain_name
 }
