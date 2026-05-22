@@ -113,3 +113,26 @@ variable "sql_servers" {
   }))
   default = {}
 }
+
+#######################################
+# ELASTIC POOL
+#######################################
+
+variable "elastic_pools" {
+  description = "Azure SQL Elastic Pools to create"
+  type = map(object({
+    name                = string
+    sql_server_key      = string
+    resource_group_key  = string
+    location            = optional(string)
+    sku_name            = optional(string, "GP_Gen5")
+    sku_tier            = optional(string, "GeneralPurpose")
+    sku_family          = optional(string, "Gen5")
+    vcores              = optional(number, 2)
+    min_capacity_per_db = optional(number, 0)
+    max_capacity_per_db = optional(number, 1)
+    max_size_bytes      = optional(number, 34359738368)
+    tags                = optional(map(string), {})
+  }))
+  default = {}
+}

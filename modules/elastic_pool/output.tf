@@ -1,9 +1,7 @@
 output "elastic_pool_id" {
-  description = "ID del Elastic Pool creado"
-  value       = azurerm_mssql_elasticpool.elastic_pool.id
+  value = azurerm_mssql_elasticpool.this.id
 }
 
 output "elastic_pool_name" {
-  description = "Nombre del Elastic Pool"
-  value       = azurerm_mssql_elasticpool.elastic_pool.name
+  value = azurerm_mssql_elasticpool.this.name
 }

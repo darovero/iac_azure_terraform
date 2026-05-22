@@ -81,3 +81,15 @@ output "sql_server_fqdns" {
     for key, sql in module.sql_servers : key => sql.sql_server_fqdn
   }
 }
+
+output "elastic_pool_names" {
+  value = {
+    for key, ep in module.elastic_pools : key => ep.elastic_pool_name
+  }
+}
+
+output "elastic_pool_ids" {
+  value = {
+    for key, ep in module.elastic_pools : key => ep.elastic_pool_id
+  }
+}

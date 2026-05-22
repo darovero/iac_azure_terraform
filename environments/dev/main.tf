@@ -71,3 +71,26 @@ module "sql_servers" {
   admin_password      = each.value.admin_password
   tags                = merge(local.common_tags, each.value.tags)
 }
+
+module "elastic_pools" {
+  source = "../../modules/elastic_pool"
+
+  for_each = var.elastic_pools
+
+  elastic_pool_name   = each.value.name
+  resource_group_name = module.resource_groups[each.value.resource_group_key].resource_group_name
+  location            = coalesce(each.value.location, module.resource_groups[each.value.resource_group_key].resource_group_location)
+  server_name         = module.sql_servers[each.value.sql_server_key].sql_server_name
+
+  sku_name            = each.value.sku_name
+  sku_tier            = each.value.sku_tier
+  sku_family          = each.value.sku_family
+  vcores              = each.value.vcores
+  min_capacity_per_db = each.value.min_capacity_per_db
+  max_capacity_per_db = each.value.max_capacity_per_db
+  max_size_bytes      = each.value.max_size_bytes
+
+  tags = merge(local.common_tags, each.value.tags)
+
+  depends_on = [module.sql_servers]
+}

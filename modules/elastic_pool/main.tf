@@ -1,13 +1,14 @@
-resource "azurerm_mssql_elasticpool" "elastic_pool" {
+resource "azurerm_mssql_elasticpool" "this" {
   name                = var.elastic_pool_name
   resource_group_name = var.resource_group_name
   location            = var.location
   server_name         = var.server_name
+  max_size_bytes      = var.max_size_bytes
 
   sku {
-    name     = "GP_Gen5"
-    tier     = "GeneralPurpose"
-    family   = "Gen5"
+    name     = var.sku_name
+    tier     = var.sku_tier
+    family   = var.sku_family
     capacity = var.vcores
   }
 
@@ -15,8 +16,6 @@ resource "azurerm_mssql_elasticpool" "elastic_pool" {
     min_capacity = var.min_capacity_per_db
     max_capacity = var.max_capacity_per_db
   }
-
-  max_size_bytes = var.max_size_bytes
 
   tags = var.tags
 }
