@@ -79,18 +79,21 @@ variable "key_vaults" {
   default = {}
 }
 #######################################
-# VIRTUAL MACHINES
+# STORAGE ACCOUNT
 #######################################
 
-variable "vm_admin_username" {
-  description = "Virtual machine administrator username"
-  type        = string
-}
-
-variable "vm_admin_password" {
-  description = "Virtual machine administrator password"
-  type        = string
-  sensitive   = true
+variable "storage_accounts" {
+  description = "Storage Accounts to create"
+  type = map(object({
+    name                     = string
+    resource_group_key       = string
+    location                 = optional(string)
+    account_tier             = optional(string, "Standard")
+    account_replication_type = optional(string, "LRS")
+    min_tls_version          = optional(string, "TLS1_2")
+    tags                     = optional(map(string), {})
+  }))
+  default = {}
 }
 
 #######################################

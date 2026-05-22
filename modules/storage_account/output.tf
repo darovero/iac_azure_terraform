@@ -1,14 +1,15 @@
 output "storage_account_name" {
-  description = "El nombre del Storage Account creado"
-  value       = azurerm_storage_account.storage.name
+  value = azurerm_storage_account.this.name
+}
+
+output "storage_account_id" {
+  value = azurerm_storage_account.this.id
 }
 
 output "storage_account_location" {
-  description = "La ubicación del Storage Account creado"
-  value       = azurerm_storage_account.storage.location
+  value = azurerm_storage_account.this.location
 }
 
 output "primary_blob_endpoint" {
-  description = "El endpoint principal del blob storage"
-  value       = azurerm_storage_account.storage.primary_blob_endpoint
+  value = azurerm_storage_account.this.primary_blob_endpoint
 }

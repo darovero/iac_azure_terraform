@@ -48,3 +48,17 @@ module "key_vaults" {
   sku_name            = each.value.sku_name
   tags                = merge(local.common_tags, each.value.tags)
 }
+
+module "storage_accounts" {
+  source = "../../modules/storage_account"
+
+  for_each = var.storage_accounts
+
+  storage_account_name     = each.value.name
+  resource_group_name      = module.resource_groups[each.value.resource_group_key].resource_group_name
+  location                 = coalesce(each.value.location, module.resource_groups[each.value.resource_group_key].resource_group_location)
+  account_tier             = each.value.account_tier
+  account_replication_type = each.value.account_replication_type
+  min_tls_version          = each.value.min_tls_version
+  tags                     = merge(local.common_tags, each.value.tags)
+}

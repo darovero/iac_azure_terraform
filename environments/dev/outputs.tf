@@ -45,3 +45,21 @@ output "key_vault_uris" {
     for key, kv in module.key_vaults : key => kv.key_vault_uri
   }
 }
+
+output "storage_account_names" {
+  value = {
+    for key, st in module.storage_accounts : key => st.storage_account_name
+  }
+}
+
+output "storage_account_ids" {
+  value = {
+    for key, st in module.storage_accounts : key => st.storage_account_id
+  }
+}
+
+output "storage_account_blob_endpoints" {
+  value = {
+    for key, st in module.storage_accounts : key => st.primary_blob_endpoint
+  }
+}
