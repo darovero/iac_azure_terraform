@@ -226,3 +226,32 @@ module "service_plans" {
   worker_count        = each.value.worker_count
   tags                = merge(local.common_tags, each.value.tags)
 }
+
+module "web_apps" {
+  source = "../../modules/web_app"
+
+  for_each = var.web_apps
+
+  web_app_name        = each.value.name
+  resource_group_name = module.resource_groups[each.value.resource_group_key].resource_group_name
+  location            = coalesce(each.value.location, module.resource_groups[each.value.resource_group_key].resource_group_location)
+  service_plan_id     = module.service_plans[each.value.service_plan_key].service_plan_id
+
+  os_type                 = each.value.os_type
+  https_only              = each.value.https_only
+  client_affinity_enabled = each.value.client_affinity_enabled
+  always_on               = each.value.always_on
+
+  windows_current_stack = each.value.windows_current_stack
+  dotnet_version        = each.value.dotnet_version
+
+  docker_image_name   = each.value.docker_image_name
+  docker_registry_url = each.value.docker_registry_url
+
+  app_settings = each.value.app_settings
+  tags         = merge(local.common_tags, each.value.tags)
+
+  depends_on = [
+    module.service_plans
+  ]
+}

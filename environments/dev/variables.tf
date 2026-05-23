@@ -259,3 +259,29 @@ variable "service_plans" {
   }))
   default = {}
 }
+
+variable "web_apps" {
+  description = "Web Apps to create"
+  type = map(object({
+    name               = string
+    resource_group_key = string
+    location           = optional(string)
+
+    service_plan_key = string
+    os_type          = string
+
+    https_only              = optional(bool, true)
+    client_affinity_enabled = optional(bool, false)
+    always_on               = optional(bool, false)
+
+    windows_current_stack = optional(string, "dotnet")
+    dotnet_version        = optional(string, "v6.0")
+
+    docker_image_name   = optional(string)
+    docker_registry_url = optional(string)
+
+    app_settings = optional(map(string), {})
+    tags         = optional(map(string), {})
+  }))
+  default = {}
+}

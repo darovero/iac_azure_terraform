@@ -1,27 +1,47 @@
-# Windows Web App
-resource "azurerm_windows_web_app" "web_app" {
-  count               = var.os_type == "Windows" ? 1 : 0
-  name                = "${var.web_app_name}-${count.index + 1}"
+resource "azurerm_windows_web_app" "this" {
+  count = lower(var.os_type) == "windows" ? 1 : 0
+
+  name                = var.web_app_name
   resource_group_name = var.resource_group_name
   location            = var.location
   service_plan_id     = var.service_plan_id
-  tags                = var.tags
+
+  https_only              = var.https_only
+  client_affinity_enabled = var.client_affinity_enabled
 
   site_config {
-    # Puedes incluir configuraciones específicas de Windows aquí si son compatibles
+    always_on = var.always_on
+
+    application_stack {
+      current_stack  = var.windows_current_stack
+      dotnet_version = var.dotnet_version
+    }
   }
+
+  app_settings = var.app_settings
+  tags         = var.tags
 }
 
-# Linux Web App
-resource "azurerm_linux_web_app" "web_app" {
-  count               = var.os_type == "Linux" ? 1 : 0
-  name                = "${var.web_app_name}-${count.index + 1}"
+resource "azurerm_linux_web_app" "this" {
+  count = lower(var.os_type) == "linux" ? 1 : 0
+
+  name                = var.web_app_name
   resource_group_name = var.resource_group_name
   location            = var.location
   service_plan_id     = var.service_plan_id
-  tags                = var.tags
+
+  https_only              = var.https_only
+  client_affinity_enabled = var.client_affinity_enabled
 
   site_config {
-    # Puedes incluir configuraciones específicas de Linux aquí si son compatibles
+    always_on = var.always_on
+
+    application_stack {
+      docker_image_name   = var.docker_image_name
+      docker_registry_url = var.docker_registry_url
+    }
   }
+
+  app_settings = var.app_settings
+  tags         = var.tags
 }

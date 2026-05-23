@@ -1,36 +1,69 @@
-variable "os_type" {
-  description = "Tipo de sistema operativo para la Web App (Windows o Linux)"
-  type        = string
-}
-
 variable "web_app_name" {
-  description = "Nombre base de la Web App"
-  type        = string
+  type = string
 }
 
 variable "resource_group_name" {
-  description = "Nombre del grupo de recursos donde se despliega la Web App"
-  type        = string
+  type = string
 }
 
 variable "location" {
-  description = "Ubicación de la Web App"
-  type        = string
+  type = string
 }
 
 variable "service_plan_id" {
-  description = "ID del Service Plan al que se asociará la Web App"
-  type        = string
+  type = string
 }
 
-variable "tags" {
-  description = "Etiquetas para la Web App"
-  type        = map(string)
-  default     = {}
+variable "os_type" {
+  type = string
+
+  validation {
+    condition     = contains(["Windows", "Linux"], var.os_type)
+    error_message = "os_type must be Windows or Linux."
+  }
+}
+
+variable "https_only" {
+  type    = bool
+  default = true
+}
+
+variable "client_affinity_enabled" {
+  type    = bool
+  default = false
+}
+
+variable "always_on" {
+  type    = bool
+  default = false
+}
+
+variable "windows_current_stack" {
+  type    = string
+  default = "dotnet"
 }
 
 variable "dotnet_version" {
-  description = "Versión de .NET para las aplicaciones Windows"
-  type        = string
-  default     = "v6.0"
+  type    = string
+  default = "v6.0"
+}
+
+variable "docker_image_name" {
+  type    = string
+  default = null
+}
+
+variable "docker_registry_url" {
+  type    = string
+  default = null
+}
+
+variable "app_settings" {
+  type    = map(string)
+  default = {}
+}
+
+variable "tags" {
+  type    = map(string)
+  default = {}
 }

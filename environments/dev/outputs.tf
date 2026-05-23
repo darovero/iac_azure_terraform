@@ -208,3 +208,21 @@ output "service_plan_names" {
     for key, sp in module.service_plans : key => sp.service_plan_name
   }
 }
+
+output "web_app_names" {
+  value = {
+    for key, app in module.web_apps : key => app.web_app_name
+  }
+}
+
+output "web_app_ids" {
+  value = {
+    for key, app in module.web_apps : key => app.web_app_id
+  }
+}
+
+output "web_app_default_hostnames" {
+  value = {
+    for key, app in module.web_apps : key => app.web_app_default_hostname
+  }
+}
