@@ -1,19 +1,19 @@
 output "vm_id" {
-  description = "ID de la máquina virtual"
-  value       = azurerm_virtual_machine.vm.id
-}
-
-output "vm_private_ip" {
-  description = "Dirección IP privada de la VM"
-  value       = azurerm_network_interface.vm_nic.private_ip_address
-}
-
-output "vm_public_ip" {
-  description = "Dirección IP pública de la VM (si aplica)"
-  value       = var.os_type == "Windows" ? azurerm_public_ip.vm_public_ip[0].ip_address : null
+  value = lower(var.os_type) == "linux" ? azurerm_linux_virtual_machine.this[0].id : azurerm_windows_virtual_machine.this[0].id
 }
 
 output "vm_name" {
-  description = "Nombre de la máquina virtual"
-  value       = azurerm_virtual_machine.vm.name
+  value = lower(var.os_type) == "linux" ? azurerm_linux_virtual_machine.this[0].name : azurerm_windows_virtual_machine.this[0].name
+}
+
+output "vm_private_ip" {
+  value = azurerm_network_interface.this.private_ip_address
+}
+
+output "vm_public_ip" {
+  value = var.enable_public_ip ? azurerm_public_ip.this[0].ip_address : null
+}
+
+output "network_interface_id" {
+  value = azurerm_network_interface.this.id
 }

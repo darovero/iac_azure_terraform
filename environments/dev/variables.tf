@@ -217,3 +217,31 @@ variable "application_gateways" {
   }))
   default = {}
 }
+
+variable "virtual_machines" {
+  description = "Virtual Machines to create"
+  type = map(object({
+    name               = string
+    resource_group_key = string
+    location           = optional(string)
+
+    vnet_key   = string
+    subnet_key = string
+
+    os_type        = string
+    vm_size        = optional(string, "Standard_B1s")
+    admin_username = string
+    admin_password = string
+
+    image_publisher = string
+    image_offer     = string
+    image_sku       = string
+    image_version   = optional(string, "latest")
+
+    disk_type        = optional(string, "Standard_LRS")
+    enable_public_ip = optional(bool, false)
+
+    tags = optional(map(string), {})
+  }))
+  default = {}
+}

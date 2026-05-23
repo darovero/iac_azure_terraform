@@ -181,3 +181,34 @@ module "application_gateways" {
     module.virtual_networks
   ]
 }
+
+module "virtual_machines" {
+  source = "../../modules/virtual_machine"
+
+  for_each = var.virtual_machines
+
+  vm_name             = each.value.name
+  resource_group_name = module.resource_groups[each.value.resource_group_key].resource_group_name
+  location            = coalesce(each.value.location, module.resource_groups[each.value.resource_group_key].resource_group_location)
+
+  subnet_id = module.virtual_networks[each.value.vnet_key].subnet_ids[each.value.subnet_key]
+
+  os_type        = each.value.os_type
+  vm_size        = each.value.vm_size
+  admin_username = each.value.admin_username
+  admin_password = each.value.admin_password
+
+  image_publisher = each.value.image_publisher
+  image_offer     = each.value.image_offer
+  image_sku       = each.value.image_sku
+  image_version   = each.value.image_version
+
+  disk_type        = each.value.disk_type
+  enable_public_ip = each.value.enable_public_ip
+
+  tags = merge(local.common_tags, each.value.tags)
+
+  depends_on = [
+    module.virtual_networks
+  ]
+}

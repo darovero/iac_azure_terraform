@@ -172,3 +172,27 @@ output "application_gateway_frontend_ips" {
     for key, agw in module.application_gateways : key => agw.application_gateway_frontend_ip
   }
 }
+
+output "virtual_machine_names" {
+  value = {
+    for key, vm in module.virtual_machines : key => vm.vm_name
+  }
+}
+
+output "virtual_machine_ids" {
+  value = {
+    for key, vm in module.virtual_machines : key => vm.vm_id
+  }
+}
+
+output "virtual_machine_private_ips" {
+  value = {
+    for key, vm in module.virtual_machines : key => vm.vm_private_ip
+  }
+}
+
+output "virtual_machine_public_ips" {
+  value = {
+    for key, vm in module.virtual_machines : key => vm.vm_public_ip
+  }
+}
