@@ -1,20 +1,26 @@
 variable "acr_name" {
-  description = "Nombre del Azure Container Registry"
-  type        = string
+  type = string
 }
 
 variable "resource_group_name" {
-  description = "Nombre del Resource Group donde se creará el ACR"
-  type        = string
+  type = string
 }
 
 variable "location" {
-  description = "Ubicación del ACR"
-  type        = string
+  type = string
+}
+
+variable "sku" {
+  type    = string
+  default = "Basic"
+}
+
+variable "admin_enabled" {
+  type    = bool
+  default = false
 }
 
 variable "tags" {
-  description = "Etiquetas aplicadas al recurso"
-  type        = map(string)
-  default     = {}
+  type    = map(string)
+  default = {}
 }

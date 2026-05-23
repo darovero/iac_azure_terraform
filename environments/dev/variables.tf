@@ -157,3 +157,16 @@ variable "virtual_networks" {
   }))
   default = {}
 }
+
+variable "container_registries" {
+  description = "Azure Container Registries to create"
+  type = map(object({
+    name               = string
+    resource_group_key = string
+    location           = optional(string)
+    sku                = optional(string, "Basic")
+    admin_enabled      = optional(bool, false)
+    tags               = optional(map(string), {})
+  }))
+  default = {}
+}

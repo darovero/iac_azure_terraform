@@ -111,3 +111,21 @@ output "virtual_network_subnet_ids" {
     for key, vnet in module.virtual_networks : key => vnet.subnet_ids
   }
 }
+
+output "container_registry_names" {
+  value = {
+    for key, acr in module.container_registries : key => acr.acr_name
+  }
+}
+
+output "container_registry_ids" {
+  value = {
+    for key, acr in module.container_registries : key => acr.acr_id
+  }
+}
+
+output "container_registry_login_servers" {
+  value = {
+    for key, acr in module.container_registries : key => acr.acr_login_server
+  }
+}

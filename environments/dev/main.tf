@@ -107,3 +107,16 @@ module "virtual_networks" {
   subnets             = each.value.subnets
   tags                = merge(local.common_tags, each.value.tags)
 }
+
+module "container_registries" {
+  source = "../../modules/acr"
+
+  for_each = var.container_registries
+
+  acr_name            = each.value.name
+  resource_group_name = module.resource_groups[each.value.resource_group_key].resource_group_name
+  location            = coalesce(each.value.location, module.resource_groups[each.value.resource_group_key].resource_group_location)
+  sku                 = each.value.sku
+  admin_enabled       = each.value.admin_enabled
+  tags                = merge(local.common_tags, each.value.tags)
+}
