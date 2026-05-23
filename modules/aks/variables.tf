@@ -1,38 +1,65 @@
 variable "aks_name" {
-  description = "Nombre del clúster AKS"
-  type        = string
-}
-
-variable "location" {
-  description = "Ubicación de Azure"
-  type        = string
+  type = string
 }
 
 variable "resource_group_name" {
-  description = "Grupo de recursos donde se desplegará el AKS"
-  type        = string
+  type = string
 }
 
-variable "node_count" {
-  description = "Número de nodos del pool"
-  type        = number
-  default     = 1
+variable "location" {
+  type = string
 }
 
-variable "vm_size" {
-  description = "Tamaño de las VMs en el node pool"
-  type        = string
-  default     = "Standard_B2s"
+variable "dns_prefix" {
+  type = string
 }
 
 variable "kubernetes_version" {
-  description = "Versión de Kubernetes a usar"
-  type        = string
-  default     = "1.28.3"
+  type    = string
+  default = null
+}
+
+variable "sku_tier" {
+  type    = string
+  default = "Free"
+}
+
+variable "private_cluster_enabled" {
+  type    = bool
+  default = false
+}
+
+variable "default_node_pool_name" {
+  type    = string
+  default = "default"
+}
+
+variable "node_count" {
+  type    = number
+  default = 1
+}
+
+variable "vm_size" {
+  type    = string
+  default = "Standard_B2s"
+}
+
+variable "vnet_subnet_id" {
+  type    = string
+  default = null
+}
+
+variable "network_plugin" {
+  type    = string
+  default = "azure"
+}
+
+variable "load_balancer_sku" {
+  type    = string
+  default = "standard"
 }
 
 variable "tags" {
-  description = "Etiquetas para el AKS"
-  type        = map(string)
-  default     = {}
+  type    = map(string)
+  default = {}
 }

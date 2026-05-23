@@ -120,3 +120,36 @@ module "container_registries" {
   admin_enabled       = each.value.admin_enabled
   tags                = merge(local.common_tags, each.value.tags)
 }
+
+module "aks_clusters" {
+  source = "../../modules/aks"
+
+  for_each = var.aks_clusters
+
+  aks_name            = each.value.name
+  resource_group_name = module.resource_groups[each.value.resource_group_key].resource_group_name
+  location            = coalesce(each.value.location, module.resource_groups[each.value.resource_group_key].resource_group_location)
+
+  dns_prefix              = coalesce(each.value.dns_prefix, "${each.value.name}-dns")
+  kubernetes_version      = each.value.kubernetes_version
+  sku_tier                = each.value.sku_tier
+  private_cluster_enabled = each.value.private_cluster_enabled
+  default_node_pool_name  = each.value.default_node_pool_name
+  node_count              = each.value.node_count
+  vm_size                 = each.value.vm_size
+  network_plugin          = each.value.network_plugin
+  load_balancer_sku       = each.value.load_balancer_sku
+
+  vnet_subnet_id = (
+    each.value.vnet_key != null && each.value.subnet_key != null
+    ? module.virtual_networks[each.value.vnet_key].subnet_ids[each.value.subnet_key]
+    : null
+  )
+
+  tags = merge(local.common_tags, each.value.tags)
+
+  depends_on = [
+    module.resource_groups,
+    module.virtual_networks
+  ]
+}

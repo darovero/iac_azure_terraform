@@ -129,3 +129,28 @@ output "container_registry_login_servers" {
     for key, acr in module.container_registries : key => acr.acr_login_server
   }
 }
+
+output "aks_names" {
+  value = {
+    for key, aks in module.aks_clusters : key => aks.aks_name
+  }
+}
+
+output "aks_ids" {
+  value = {
+    for key, aks in module.aks_clusters : key => aks.aks_id
+  }
+}
+
+output "aks_hosts" {
+  value = {
+    for key, aks in module.aks_clusters : key => aks.host
+  }
+  sensitive = true
+}
+
+output "aks_kubelet_identity_object_ids" {
+  value = {
+    for key, aks in module.aks_clusters : key => aks.kubelet_identity_object_id
+  }
+}

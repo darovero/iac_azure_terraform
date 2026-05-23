@@ -170,3 +170,25 @@ variable "container_registries" {
   }))
   default = {}
 }
+
+variable "aks_clusters" {
+  description = "AKS clusters to create"
+  type = map(object({
+    name                    = string
+    resource_group_key      = string
+    location                = optional(string)
+    dns_prefix              = optional(string)
+    kubernetes_version      = optional(string)
+    sku_tier                = optional(string, "Free")
+    private_cluster_enabled = optional(bool, false)
+    default_node_pool_name  = optional(string, "default")
+    node_count              = optional(number, 1)
+    vm_size                 = optional(string, "Standard_B2s")
+    vnet_key                = optional(string)
+    subnet_key              = optional(string)
+    network_plugin          = optional(string, "azure")
+    load_balancer_sku       = optional(string, "standard")
+    tags                    = optional(map(string), {})
+  }))
+  default = {}
+}
