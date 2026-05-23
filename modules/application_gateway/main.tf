@@ -1,5 +1,6 @@
-resource "azurerm_public_ip" "gateway_public_ip" {
-  count               = var.enable_public_ip ? 1 : 0
+resource "azurerm_public_ip" "this" {
+  count = var.enable_public_ip ? 1 : 0
+
   name                = "${var.application_gateway_name}-pip"
   location            = var.location
   resource_group_name = var.resource_group_name
@@ -9,7 +10,7 @@ resource "azurerm_public_ip" "gateway_public_ip" {
   tags = var.tags
 }
 
-resource "azurerm_application_gateway" "application_gateway" {
+resource "azurerm_application_gateway" "this" {
   name                = var.application_gateway_name
   location            = var.location
   resource_group_name = var.resource_group_name
@@ -27,7 +28,7 @@ resource "azurerm_application_gateway" "application_gateway" {
 
   frontend_ip_configuration {
     name                 = "appGatewayFrontendIP"
-    public_ip_address_id = var.enable_public_ip && length(azurerm_public_ip.gateway_public_ip) > 0 ? azurerm_public_ip.gateway_public_ip[0].id : null
+    public_ip_address_id = var.enable_public_ip ? azurerm_public_ip.this[0].id : null
   }
 
   frontend_port {
@@ -37,6 +38,7 @@ resource "azurerm_application_gateway" "application_gateway" {
 
   dynamic "frontend_port" {
     for_each = var.enable_https ? [1] : []
+
     content {
       name = "httpsPort"
       port = 443
@@ -47,8 +49,16 @@ resource "azurerm_application_gateway" "application_gateway" {
     name = "appGatewayBackendPool"
   }
 
+  backend_http_settings {
+    name                  = "defaultBackendHttpSettings"
+    cookie_based_affinity = "Disabled"
+    port                  = 80
+    protocol              = "Http"
+    request_timeout       = 20
+  }
+
   http_listener {
-    name                           = "appGatewayListener"
+    name                           = "appGatewayListenerHttp"
     frontend_ip_configuration_name = "appGatewayFrontendIP"
     frontend_port_name             = "httpPort"
     protocol                       = "Http"
@@ -56,6 +66,7 @@ resource "azurerm_application_gateway" "application_gateway" {
 
   dynamic "http_listener" {
     for_each = var.enable_https ? [1] : []
+
     content {
       name                           = "appGatewayListenerHttps"
       frontend_ip_configuration_name = "appGatewayFrontendIP"
@@ -66,9 +77,9 @@ resource "azurerm_application_gateway" "application_gateway" {
   }
 
   request_routing_rule {
-    name                       = "defaultRule"
+    name                       = "defaultHttpRule"
     rule_type                  = "Basic"
-    http_listener_name         = "appGatewayListener"
+    http_listener_name         = "appGatewayListenerHttp"
     backend_address_pool_name  = "appGatewayBackendPool"
     backend_http_settings_name = "defaultBackendHttpSettings"
     priority                   = 100
@@ -76,6 +87,7 @@ resource "azurerm_application_gateway" "application_gateway" {
 
   dynamic "request_routing_rule" {
     for_each = var.enable_https ? [1] : []
+
     content {
       name                       = "defaultHttpsRule"
       rule_type                  = "Basic"
@@ -86,19 +98,12 @@ resource "azurerm_application_gateway" "application_gateway" {
     }
   }
 
-  backend_http_settings {
-    name                  = "defaultBackendHttpSettings"
-    cookie_based_affinity = "Disabled"
-    port                  = 80
-    protocol              = "Http"
-    request_timeout       = 20
-  }
-
   dynamic "ssl_certificate" {
     for_each = var.enable_https ? [1] : []
+
     content {
       name     = "appGatewayCert"
-      data     = base64decode(var.ssl_certificate_data)
+      data     = var.ssl_certificate_data
       password = var.ssl_certificate_password
     }
   }

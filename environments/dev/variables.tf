@@ -192,3 +192,28 @@ variable "aks_clusters" {
   }))
   default = {}
 }
+
+variable "application_gateways" {
+  description = "Application Gateways to create"
+  type = map(object({
+    name               = string
+    resource_group_key = string
+    location           = optional(string)
+
+    vnet_key   = string
+    subnet_key = string
+
+    sku_name     = optional(string, "Standard_v2")
+    sku_tier     = optional(string, "Standard_v2")
+    sku_capacity = optional(number, 2)
+
+    enable_public_ip = optional(bool, true)
+    enable_https     = optional(bool, false)
+
+    ssl_certificate_data     = optional(string, "")
+    ssl_certificate_password = optional(string, "")
+
+    tags = optional(map(string), {})
+  }))
+  default = {}
+}

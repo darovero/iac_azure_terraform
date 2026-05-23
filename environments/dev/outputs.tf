@@ -154,3 +154,21 @@ output "aks_kubelet_identity_object_ids" {
     for key, aks in module.aks_clusters : key => aks.kubelet_identity_object_id
   }
 }
+
+output "application_gateway_names" {
+  value = {
+    for key, agw in module.application_gateways : key => agw.application_gateway_name
+  }
+}
+
+output "application_gateway_ids" {
+  value = {
+    for key, agw in module.application_gateways : key => agw.application_gateway_id
+  }
+}
+
+output "application_gateway_frontend_ips" {
+  value = {
+    for key, agw in module.application_gateways : key => agw.application_gateway_frontend_ip
+  }
+}

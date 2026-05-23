@@ -153,3 +153,31 @@ module "aks_clusters" {
     module.virtual_networks
   ]
 }
+
+module "application_gateways" {
+  source = "../../modules/application_gateway"
+
+  for_each = var.application_gateways
+
+  application_gateway_name = each.value.name
+  resource_group_name      = module.resource_groups[each.value.resource_group_key].resource_group_name
+  location                 = coalesce(each.value.location, module.resource_groups[each.value.resource_group_key].resource_group_location)
+
+  subnet_id = module.virtual_networks[each.value.vnet_key].subnet_ids[each.value.subnet_key]
+
+  sku_name     = each.value.sku_name
+  sku_tier     = each.value.sku_tier
+  sku_capacity = each.value.sku_capacity
+
+  enable_public_ip = each.value.enable_public_ip
+  enable_https     = each.value.enable_https
+
+  ssl_certificate_data     = each.value.ssl_certificate_data
+  ssl_certificate_password = each.value.ssl_certificate_password
+
+  tags = merge(local.common_tags, each.value.tags)
+
+  depends_on = [
+    module.virtual_networks
+  ]
+}
