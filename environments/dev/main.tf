@@ -212,3 +212,17 @@ module "virtual_machines" {
     module.virtual_networks
   ]
 }
+
+module "service_plans" {
+  source = "../../modules/service_plan"
+
+  for_each = var.service_plans
+
+  service_plan_name   = each.value.name
+  resource_group_name = module.resource_groups[each.value.resource_group_key].resource_group_name
+  location            = coalesce(each.value.location, module.resource_groups[each.value.resource_group_key].resource_group_location)
+  os_type             = each.value.os_type
+  sku_name            = each.value.sku_name
+  worker_count        = each.value.worker_count
+  tags                = merge(local.common_tags, each.value.tags)
+}

@@ -196,3 +196,15 @@ output "virtual_machine_public_ips" {
     for key, vm in module.virtual_machines : key => vm.vm_public_ip
   }
 }
+
+output "service_plan_ids" {
+  value = {
+    for key, sp in module.service_plans : key => sp.service_plan_id
+  }
+}
+
+output "service_plan_names" {
+  value = {
+    for key, sp in module.service_plans : key => sp.service_plan_name
+  }
+}

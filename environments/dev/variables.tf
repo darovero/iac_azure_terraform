@@ -245,3 +245,17 @@ variable "virtual_machines" {
   }))
   default = {}
 }
+
+variable "service_plans" {
+  description = "App Service Plans to create"
+  type = map(object({
+    name               = string
+    resource_group_key = string
+    location           = optional(string)
+    os_type            = string
+    sku_name           = optional(string, "B1")
+    worker_count       = optional(number, 1)
+    tags               = optional(map(string), {})
+  }))
+  default = {}
+}

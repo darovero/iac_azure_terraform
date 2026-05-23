@@ -1,30 +1,35 @@
 variable "service_plan_name" {
-  description = "Nombre del Service Plan"
-  type        = string
+  type = string
 }
 
 variable "location" {
-  description = "Ubicación del recurso"
-  type        = string
+  type = string
 }
 
 variable "resource_group_name" {
-  description = "Nombre del Resource Group"
-  type        = string
+  type = string
 }
 
 variable "os_type" {
-  description = "Tipo de sistema operativo del Service Plan"
-  type        = string
+  type = string
+
+  validation {
+    condition     = contains(["Windows", "Linux"], var.os_type)
+    error_message = "os_type must be Windows or Linux."
+  }
 }
 
 variable "sku_name" {
-  description = "SKU del Service Plan"
-  type        = string
+  type    = string
+  default = "B1"
+}
+
+variable "worker_count" {
+  type    = number
+  default = 1
 }
 
 variable "tags" {
-  description = "Etiquetas del recurso"
-  type        = map(string)
-  default     = {}
+  type    = map(string)
+  default = {}
 }
