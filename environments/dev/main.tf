@@ -255,3 +255,34 @@ module "web_apps" {
     module.service_plans
   ]
 }
+
+module "function_apps" {
+  source = "../../modules/function_app"
+
+  for_each = var.function_apps
+
+  function_app_name   = each.value.name
+  resource_group_name = module.resource_groups[each.value.resource_group_key].resource_group_name
+  location            = coalesce(each.value.location, module.resource_groups[each.value.resource_group_key].resource_group_location)
+
+  service_plan_id = module.service_plans[each.value.service_plan_key].service_plan_id
+
+  storage_account_name       = module.storage_accounts[each.value.storage_account_key].storage_account_name
+  storage_account_access_key = module.storage_accounts[each.value.storage_account_key].storage_account_primary_access_key
+
+  os_type    = each.value.os_type
+  https_only = each.value.https_only
+  always_on  = each.value.always_on
+
+  python_version = each.value.python_version
+  node_version   = each.value.node_version
+  dotnet_version = each.value.dotnet_version
+
+  app_settings = each.value.app_settings
+  tags         = merge(local.common_tags, each.value.tags)
+
+  depends_on = [
+    module.service_plans,
+    module.storage_accounts
+  ]
+}

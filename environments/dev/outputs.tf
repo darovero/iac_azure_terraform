@@ -64,6 +64,13 @@ output "storage_account_blob_endpoints" {
   }
 }
 
+output "storage_account_primary_access_keys" {
+  value = {
+    for key, st in module.storage_accounts : key => st.storage_account_primary_access_key
+  }
+  sensitive = true
+}
+
 output "sql_server_names" {
   value = {
     for key, sql in module.sql_servers : key => sql.sql_server_name
@@ -224,5 +231,29 @@ output "web_app_ids" {
 output "web_app_default_hostnames" {
   value = {
     for key, app in module.web_apps : key => app.web_app_default_hostname
+  }
+}
+
+output "function_app_names" {
+  value = {
+    for key, func in module.function_apps : key => func.function_app_name
+  }
+}
+
+output "function_app_ids" {
+  value = {
+    for key, func in module.function_apps : key => func.function_app_id
+  }
+}
+
+output "function_app_default_hostnames" {
+  value = {
+    for key, func in module.function_apps : key => func.function_app_default_hostname
+  }
+}
+
+output "function_app_principal_ids" {
+  value = {
+    for key, func in module.function_apps : key => func.function_app_principal_id
   }
 }

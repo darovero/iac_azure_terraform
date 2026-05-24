@@ -13,3 +13,8 @@ output "storage_account_location" {
 output "primary_blob_endpoint" {
   value = azurerm_storage_account.this.primary_blob_endpoint
 }
+
+output "storage_account_primary_access_key" {
+  value     = azurerm_storage_account.this.primary_access_key
+  sensitive = true
+}

@@ -285,3 +285,27 @@ variable "web_apps" {
   }))
   default = {}
 }
+
+variable "function_apps" {
+  description = "Function Apps to create"
+  type = map(object({
+    name               = string
+    resource_group_key = string
+    location           = optional(string)
+
+    service_plan_key    = string
+    storage_account_key = string
+
+    os_type    = string
+    https_only = optional(bool, true)
+    always_on  = optional(bool, false)
+
+    python_version = optional(string)
+    node_version   = optional(string)
+    dotnet_version = optional(string, "v6.0")
+
+    app_settings = optional(map(string), {})
+    tags         = optional(map(string), {})
+  }))
+  default = {}
+}
