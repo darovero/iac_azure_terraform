@@ -257,3 +257,22 @@ output "function_app_principal_ids" {
     for key, func in module.function_apps : key => func.function_app_principal_id
   }
 }
+
+output "application_insights_names" {
+  value = {
+    for key, appi in module.application_insights : key => appi.application_insights_name
+  }
+}
+
+output "application_insights_ids" {
+  value = {
+    for key, appi in module.application_insights : key => appi.application_insights_id
+  }
+}
+
+output "application_insights_connection_strings" {
+  value = {
+    for key, appi in module.application_insights : key => appi.connection_string
+  }
+  sensitive = true
+}

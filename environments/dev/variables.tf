@@ -309,3 +309,18 @@ variable "function_apps" {
   }))
   default = {}
 }
+
+variable "application_insights" {
+  description = "Application Insights resources to create"
+  type = map(object({
+    name                 = string
+    resource_group_key   = string
+    log_analytics_key    = string
+    location             = optional(string)
+    application_type     = optional(string, "web")
+    retention_in_days    = optional(number, 90)
+    daily_data_cap_in_gb = optional(number, 1)
+    tags                 = optional(map(string), {})
+  }))
+  default = {}
+}

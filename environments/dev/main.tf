@@ -286,3 +286,24 @@ module "function_apps" {
     module.storage_accounts
   ]
 }
+
+module "application_insights" {
+  source = "../../modules/application_insights"
+
+  for_each = var.application_insights
+
+  application_insights_name = each.value.name
+  resource_group_name       = module.resource_groups[each.value.resource_group_key].resource_group_name
+  location                  = coalesce(each.value.location, module.resource_groups[each.value.resource_group_key].resource_group_location)
+
+  workspace_id         = module.log_analytics_workspaces[each.value.log_analytics_key].log_analytics_id
+  application_type     = each.value.application_type
+  retention_in_days    = each.value.retention_in_days
+  daily_data_cap_in_gb = each.value.daily_data_cap_in_gb
+
+  tags = merge(local.common_tags, each.value.tags)
+
+  depends_on = [
+    module.log_analytics_workspaces
+  ]
+}
