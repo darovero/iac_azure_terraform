@@ -109,7 +109,7 @@ module "virtual_networks" {
 }
 
 module "container_registries" {
-  source = "../../modules/acr"
+  source = "../../modules/container_registry"
 
   for_each = var.container_registries
 
