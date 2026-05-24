@@ -122,9 +122,9 @@ module "container_registries" {
 }
 
 module "aks_clusters" {
-  source = "../../modules/aks"
+  source = "../../modules/kubernetes_cluster"
 
-  for_each = var.aks_clusters
+  for_each = var.kubernetes_clusters
 
   aks_name            = each.value.name
   resource_group_name = module.resource_groups[each.value.resource_group_key].resource_group_name

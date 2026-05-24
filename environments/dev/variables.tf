@@ -171,7 +171,7 @@ variable "container_registries" {
   default = {}
 }
 
-variable "aks_clusters" {
+variable "kubernetes_clusters" {
   description = "AKS clusters to create"
   type = map(object({
     name                    = string
