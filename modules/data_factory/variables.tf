@@ -1,20 +1,26 @@
 variable "data_factory_name" {
-  description = "Nombre del Azure Data Factory"
-  type        = string
-}
-
-variable "location" {
-  description = "Ubicación donde se desplegará el ADF"
-  type        = string
+  type = string
 }
 
 variable "resource_group_name" {
-  description = "Nombre del Resource Group"
-  type        = string
+  type = string
+}
+
+variable "location" {
+  type = string
+}
+
+variable "public_network_enabled" {
+  type    = bool
+  default = true
+}
+
+variable "managed_virtual_network_enabled" {
+  type    = bool
+  default = false
 }
 
 variable "tags" {
-  description = "Etiquetas para el recurso"
-  type        = map(string)
-  default     = {}
+  type    = map(string)
+  default = {}
 }

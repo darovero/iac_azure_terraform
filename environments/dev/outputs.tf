@@ -276,3 +276,21 @@ output "application_insights_connection_strings" {
   }
   sensitive = true
 }
+
+output "data_factory_names" {
+  value = {
+    for key, adf in module.data_factories : key => adf.data_factory_name
+  }
+}
+
+output "data_factory_ids" {
+  value = {
+    for key, adf in module.data_factories : key => adf.data_factory_id
+  }
+}
+
+output "data_factory_principal_ids" {
+  value = {
+    for key, adf in module.data_factories : key => adf.data_factory_principal_id
+  }
+}

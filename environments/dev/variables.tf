@@ -324,3 +324,18 @@ variable "application_insights" {
   }))
   default = {}
 }
+
+variable "data_factories" {
+  description = "Azure Data Factories to create"
+  type = map(object({
+    name               = string
+    resource_group_key = string
+    location           = optional(string)
+
+    public_network_enabled          = optional(bool, true)
+    managed_virtual_network_enabled = optional(bool, false)
+
+    tags = optional(map(string), {})
+  }))
+  default = {}
+}

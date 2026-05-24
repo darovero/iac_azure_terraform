@@ -307,3 +307,18 @@ module "application_insights" {
     module.log_analytics_workspaces
   ]
 }
+
+module "data_factories" {
+  source = "../../modules/data_factory"
+
+  for_each = var.data_factories
+
+  data_factory_name   = each.value.name
+  resource_group_name = module.resource_groups[each.value.resource_group_key].resource_group_name
+  location            = coalesce(each.value.location, module.resource_groups[each.value.resource_group_key].resource_group_location)
+
+  public_network_enabled          = each.value.public_network_enabled
+  managed_virtual_network_enabled = each.value.managed_virtual_network_enabled
+
+  tags = merge(local.common_tags, each.value.tags)
+}
