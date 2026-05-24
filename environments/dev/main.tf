@@ -322,3 +322,26 @@ module "data_factories" {
 
   tags = merge(local.common_tags, each.value.tags)
 }
+
+module "network_security_groups" {
+  source = "../../modules/network_security_group"
+
+  for_each = var.network_security_groups
+
+  nsg_name            = each.value.name
+  resource_group_name = module.resource_groups[each.value.resource_group_key].resource_group_name
+  location            = coalesce(each.value.location, module.resource_groups[each.value.resource_group_key].resource_group_location)
+
+  subnet_ids = {
+    for assoc_key, assoc in each.value.subnet_associations :
+    assoc_key => module.virtual_networks[assoc.vnet_key].subnet_ids[assoc.subnet_key]
+  }
+
+  security_rules = each.value.security_rules
+
+  tags = merge(local.common_tags, each.value.tags)
+
+  depends_on = [
+    module.virtual_networks
+  ]
+}

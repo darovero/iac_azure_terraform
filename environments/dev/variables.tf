@@ -339,3 +339,32 @@ variable "data_factories" {
   }))
   default = {}
 }
+
+variable "network_security_groups" {
+  description = "Network Security Groups to create"
+  type = map(object({
+    name               = string
+    resource_group_key = string
+    location           = optional(string)
+
+    subnet_associations = optional(map(object({
+      vnet_key   = string
+      subnet_key = string
+    })), {})
+
+    security_rules = optional(map(object({
+      name                       = string
+      priority                   = number
+      direction                  = string
+      access                     = string
+      protocol                   = string
+      source_port_range          = string
+      destination_port_range     = string
+      source_address_prefix      = string
+      destination_address_prefix = string
+    })), {})
+
+    tags = optional(map(string), {})
+  }))
+  default = {}
+}
