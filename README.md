@@ -35,6 +35,7 @@ Este proyecto busca:
 │   ├── key_vault/
 │   ├── kubernetes_cluster/
 │   ├── log_analytics/
+│   ├── managed_identity/
 │   ├── network_security_group/
 │   ├── resource_group/
 │   ├── service_plan/
