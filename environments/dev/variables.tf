@@ -368,3 +368,14 @@ variable "network_security_groups" {
   }))
   default = {}
 }
+
+variable "managed_identities" {
+  description = "User Assigned Managed Identities to create"
+  type = map(object({
+    name               = string
+    resource_group_key = string
+    location           = optional(string)
+    tags               = optional(map(string), {})
+  }))
+  default = {}
+}

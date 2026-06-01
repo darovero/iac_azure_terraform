@@ -345,3 +345,15 @@ module "network_security_groups" {
     module.virtual_networks
   ]
 }
+
+module "managed_identities" {
+  source = "../../modules/managed_identity"
+
+  for_each = var.managed_identities
+
+  managed_identity_name = each.value.name
+  resource_group_name   = module.resource_groups[each.value.resource_group_key].resource_group_name
+  location              = coalesce(each.value.location, module.resource_groups[each.value.resource_group_key].resource_group_location)
+
+  tags = merge(local.common_tags, each.value.tags)
+}

@@ -294,3 +294,27 @@ output "data_factory_principal_ids" {
     for key, adf in module.data_factories : key => adf.data_factory_principal_id
   }
 }
+
+output "managed_identity_names" {
+  value = {
+    for key, mi in module.managed_identities : key => mi.managed_identity_name
+  }
+}
+
+output "managed_identity_ids" {
+  value = {
+    for key, mi in module.managed_identities : key => mi.managed_identity_id
+  }
+}
+
+output "managed_identity_client_ids" {
+  value = {
+    for key, mi in module.managed_identities : key => mi.managed_identity_client_id
+  }
+}
+
+output "managed_identity_principal_ids" {
+  value = {
+    for key, mi in module.managed_identities : key => mi.managed_identity_principal_id
+  }
+}
