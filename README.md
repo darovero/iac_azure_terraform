@@ -29,6 +29,7 @@ Este proyecto busca:
 │   ├── application_gateway/
 │   ├── application_insights/
 │   ├── container_registry/
+│   ├── cosmosdb_mongodb/
 │   ├── data_factory/
 │   ├── elastic_pool/
 │   ├── function_app/
