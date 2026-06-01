@@ -357,3 +357,22 @@ module "managed_identities" {
 
   tags = merge(local.common_tags, each.value.tags)
 }
+
+module "cosmosdb_mongodb_accounts" {
+  source = "../../modules/cosmosdb_mongodb"
+
+  for_each = var.cosmosdb_mongodb_accounts
+
+  cosmosdb_account_name = each.value.name
+  resource_group_name   = module.resource_groups[each.value.resource_group_key].resource_group_name
+  location              = coalesce(each.value.location, module.resource_groups[each.value.resource_group_key].resource_group_location)
+
+  offer_type           = each.value.offer_type
+  mongo_server_version = each.value.mongo_server_version
+  consistency_level    = each.value.consistency_level
+
+  databases   = each.value.databases
+  collections = each.value.collections
+
+  tags = merge(local.common_tags, each.value.tags)
+}

@@ -318,3 +318,22 @@ output "managed_identity_principal_ids" {
     for key, mi in module.managed_identities : key => mi.managed_identity_principal_id
   }
 }
+
+output "cosmosdb_mongodb_account_names" {
+  value = {
+    for key, mongo in module.cosmosdb_mongodb_accounts : key => mongo.cosmosdb_account_name
+  }
+}
+
+output "cosmosdb_mongodb_endpoints" {
+  value = {
+    for key, mongo in module.cosmosdb_mongodb_accounts : key => mongo.cosmosdb_endpoint
+  }
+}
+
+output "cosmosdb_mongodb_connection_strings" {
+  value = {
+    for key, mongo in module.cosmosdb_mongodb_accounts : key => mongo.mongodb_connection_strings
+  }
+  sensitive = true
+}

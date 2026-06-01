@@ -379,3 +379,30 @@ variable "managed_identities" {
   }))
   default = {}
 }
+
+variable "cosmosdb_mongodb_accounts" {
+  description = "Cosmos DB MongoDB API accounts to create"
+  type = map(object({
+    name                 = string
+    resource_group_key   = string
+    location             = optional(string)
+    offer_type           = optional(string, "Standard")
+    mongo_server_version = optional(string, "4.2")
+    consistency_level    = optional(string, "Session")
+
+    databases = optional(map(object({
+      name       = string
+      throughput = optional(number)
+    })), {})
+
+    collections = optional(map(object({
+      name         = string
+      database_key = string
+      shard_key    = string
+      throughput   = optional(number)
+    })), {})
+
+    tags = optional(map(string), {})
+  }))
+  default = {}
+}
