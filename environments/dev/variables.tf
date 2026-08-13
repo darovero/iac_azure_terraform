@@ -406,3 +406,58 @@ variable "cosmosdb_mongodb_accounts" {
   }))
   default = {}
 }
+
+variable "bastion_hosts" {
+  description = "Azure Bastion Hosts to create"
+
+  type = map(object({
+    name               = string
+    resource_group_key = string
+    location           = optional(string)
+
+    vnet_key   = string
+    subnet_key = string
+
+    sku = optional(string, "Basic")
+
+    tags = optional(map(string), {})
+  }))
+
+  default = {}
+}
+
+module "bastion_hosts" {
+  source = "../../modules/bastion_host"
+
+  for_each = var.bastion_hosts
+
+  bastion_name = each.value.name
+
+  resource_group_name = module.resource_groups[
+    each.value.resource_group_key
+  ].resource_group_name
+
+  location = coalesce(
+    each.value.location,
+    module.resource_groups[
+      each.value.resource_group_key
+    ].resource_group_location
+  )
+
+  subnet_id = module.virtual_networks[
+    each.value.vnet_key
+    ].subnet_ids[
+    each.value.subnet_key
+  ]
+
+  sku = each.value.sku
+
+  tags = merge(
+    local.common_tags,
+    each.value.tags
+  )
+
+  depends_on = [
+    module.virtual_networks
+  ]
+}

@@ -337,3 +337,24 @@ output "cosmosdb_mongodb_connection_strings" {
   }
   sensitive = true
 }
+
+output "bastion_host_names" {
+  value = {
+    for key, bastion in module.bastion_hosts :
+    key => bastion.bastion_host_name
+  }
+}
+
+output "bastion_host_ids" {
+  value = {
+    for key, bastion in module.bastion_hosts :
+    key => bastion.bastion_host_id
+  }
+}
+
+output "bastion_public_ip_addresses" {
+  value = {
+    for key, bastion in module.bastion_hosts :
+    key => bastion.bastion_public_ip_address
+  }
+}
